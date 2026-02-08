@@ -1,12 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lottery Imitation System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<h1>Lottery Dashboard</h1>
-<button onclick="load()">Load Statistics</button>
-<pre id="out"></pre>
-<script>
-    function load(){
-        fetch('/admin/stats')
-            .then(r=>r.json())
-            .then(d=>out.innerText=JSON.stringify(d,null,2))
-    }
-</script>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .box {
+            background: #fff;
+            padding: 50px 60px;
+            border-radius: 22px;
+            text-align: center;
+            box-shadow: 0 25px 70px rgba(248, 87, 166, 0.35);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        h1 {
+            margin-bottom: 15px;
+            color: #d63384;
+            font-size: 2.3em;
+        }
+
+        p {
+            margin-bottom: 35px;
+            color: #777;
+            font-size: 1em;
+        }
+
+        a {
+            display: block;
+            margin: 16px 0;
+            padding: 16px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 14px;
+            color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+        }
+
+        .user {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #7a1c3f;
+        }
+
+        .admin {
+            background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+        }
+
+        .footer {
+            margin-top: 28px;
+            font-size: 13px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h1>Lottery System</h1>
+    <p>Choose how you want to enter</p>
+
+    <a class="user" href="/user.html">Enter as User</a>
+    <a class="admin" href="/admin.html">Enter as Admin</a>
+
+    <div class="footer">
+        Unity team
+    </div>
+</div>
+
+</body>
+</html>
