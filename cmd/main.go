@@ -21,15 +21,6 @@ func main() {
 		prizeRepo,
 	)
 
-	userHandler := handlers.NewUserHandler(service)
-	ticketHandler := handlers.NewTicketHandler(service)
-	adminHandler := handlers.NewAdminHandler(service)
-
-	mux := http.NewServeMux()
-	userHandler.Register(mux)
-	ticketHandler.Register(mux)
-	adminHandler.Register(mux)
-
 	fs := http.FileServer(http.Dir("./internal/frontend"))
 	mux.Handle("/", fs)
 
