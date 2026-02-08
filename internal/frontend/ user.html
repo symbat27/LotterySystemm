@@ -1,0 +1,666 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Imitation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .auth-section, .lottery-section {
+            display: none;
+        }
+
+        .auth-section.active, .lottery-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #7a1c3f;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6a88 0%, #ff99ac 100%);
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .user-info h3 {
+            color: #d63384;
+            margin-bottom: 10px;
+        }
+
+        .balance {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .number-selector {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .number-btn {
+            aspect-ratio: 1;
+            border: 2px solid #f857a6;
+            background: white;
+            color: #f857a6;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .number-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .number-btn.selected {
+            background: #f857a6;
+            color: white;
+            transform: scale(1.1);
+        }
+
+
+        .selected-numbers {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .selected-numbers h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .number-display {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .number-ball {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .tickets-list {
+            margin-top: 30px;
+        }
+
+        .ticket-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #f857a6;
+        }
+
+        .ticket-card.winner {
+            border-left-color: #d63384;
+            background: #ffe3ec;
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .ticket-id {
+            font-size: 0.9em;
+            color: #a8326f;
+        }
+
+        .ticket-numbers {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .ticket-ball {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .prize-info {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 3px solid #f857a6;
+        }
+
+        .prize-info.money {
+            background: #ffd6e7;
+            border-left-color: #d63384;
+        }
+
+        .prize-info.travel {
+            background: #f6d6ff;
+            border-left-color: #a855f7;
+        }
+
+        .prize-info.gift {
+            background: #ffe4f1;
+            border-left-color: #ec4899;
+        }
+
+        .error {
+            background: #ffe4e9;
+            color: #9f1239;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f5c6cb;
+        }
+
+        .success {
+            background: #ffe4f1;
+            color: #9d174d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c3e6cb;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #fce7f3;
+            color: #9d174d;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🎰 Lottery System</h1>
+        <p>Your Chance to Win Amazing Prizes!</p>
+    </div>
+
+    <div class="content">
+        <div class="auth-section active" id="authSection">
+            <div id="authMessage"></div>
+
+
+            <div id="loginForm">
+                <h2 style="margin-bottom: 20px; color: #333;">Welcome Back</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password">
+                </div>
+                <button class="btn" onclick="login()">Login</button>
+                <button class="btn btn-secondary" onclick="showRegister()">Create Account</button>
+            </div>
+
+            <div id="registerForm" style="display: none;">
+                <h2 style="margin-bottom: 20px; color: #333;">Create Account</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="regUsername" placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="Choose a password">
+                </div>
+                <button class="btn btn-success" onclick="register()">Register</button>
+                <button class="btn btn-secondary" onclick="showLogin()">Back to Login</button>
+            </div>
+        </div>
+
+        <div class="lottery-section" id="lotterySection">
+            <div class="user-info">
+                <h3>Welcome, <span id="displayUsername"></span>!</h3>
+                <p>Balance: <span class="balance" id="userBalance">0</span> TG</p>
+                <button class="btn btn-danger" onclick="logout()" style="width: auto; padding: 8px 20px; margin-top: 10px;">Logout</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('buyTicket')">Buy Ticket</button>
+                <button class="tab" onclick="showTab('myTickets')">My Tickets</button>
+            </div>
+
+            <div class="tab-content active" id="buyTicketTab">
+                <div id="ticketMessage"></div>
+
+                <h3 style="margin-bottom: 15px; color: #333;">Select 6 Numbers (1-49)</h3>
+
+                <div class="selected-numbers">
+                    <h4>Selected Numbers: <span id="selectedCount">0</span>/6</h4>
+                    <div class="number-display" id="selectedDisplay"></div>
+                </div>
+
+                <div class="number-selector" id="numberSelector"></div>
+
+                <p style="text-align: center; color: #666; margin: 20px 0;">Ticket Cost: 100 TG</p>
+
+                <button class="btn btn-success" onclick="buyTicket()">Buy Ticket</button>
+            </div>
+
+            <div class="tab-content" id="myTicketsTab">
+                <h3 style="margin-bottom: 20px; color: #333;">My Lottery Tickets</h3>
+                <div id="ticketsList" class="tickets-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentUser = null;
+    let selectedNumbers = [];
+    let currentDraw = null;
+
+    function initNumberSelector() {
+        const selector = document.getElementById('numberSelector');
+        selector.innerHTML = '';
+        for (let i = 1; i <= 49; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'number-btn';
+            btn.textContent = i;
+            btn.onclick = () => toggleNumber(i);
+            selector.appendChild(btn);
+        }
+    }
+
+    function toggleNumber(num) {
+        const index = selectedNumbers.indexOf(num);
+        if (index > -1) {
+            selectedNumbers.splice(index, 1);
+        } else {
+            if (selectedNumbers.length < 6) {
+                selectedNumbers.push(num);
+            } else {
+                return;
+            }
+        }
+        updateNumberDisplay();
+    }
+
+    function updateNumberDisplay() {
+        document.getElementById('selectedCount').textContent = selectedNumbers.length;
+
+
+        const display = document.getElementById('selectedDisplay');
+        display.innerHTML = '';
+        selectedNumbers.sort((a, b) => a - b).forEach(num => {
+            const ball = document.createElement('div');
+            ball.className = 'number-ball';
+            ball.textContent = num;
+            display.appendChild(ball);
+        });
+
+        document.querySelectorAll('.number-btn').forEach((btn, idx) => {
+            const num = idx + 1;
+            if (selectedNumbers.includes(num)) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    function showMessage(elementId, message, isError = false) {
+        const el = document.getElementById(elementId);
+        el.innerHTML = <div class="${isError ? 'error' : 'success'}">${message}</div>;
+        setTimeout(() => {el.innerHTML = '';}, 5000);
+    }
+
+    function showLogin() {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('registerForm').style.display = 'none';
+    }
+
+    function showRegister() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'block';
+    }
+
+    async function register() {
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+
+        if (!username)  (!password) {
+            showMessage('authMessage', 'Please fill in all fields', true);
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                showMessage('authMessage', 'Registration successful! Please login.');
+                showLogin();
+                document.getElementById('regUsername').value = '';
+                document.getElementById('regPassword').value = '';
+            } else {
+                showMessage('authMessage', data.message, 'Registration failed', true);
+            }
+        } catch (error) {
+            showMessage('authMessage', 'Registration failed: ' + error.message, true);
+        }
+    }
+
+    async function login() {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+
+
+        if (!username  !password) {
+            showMessage('authMessage', 'Please fill in all fields', true);
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                currentUser = data.user;
+                document.getElementById('authSection').classList.remove('active');
+                document.getElementById('lotterySection').classList.add('active');
+                document.getElementById('displayUsername').textContent = currentUser.username;
+                document.getElementById('userBalance').textContent = currentUser.balance;
+                loadPendingDraw();
+                loadUserTickets();
+            } else {
+                showMessage('authMessage', 'Invalid username or password', true);
+            }
+        } catch (error) {
+            showMessage('authMessage', 'Login failed: ' + error.message, true);
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        selectedNumbers = [];
+        document.getElementById('lotterySection').classList.remove('active');
+        document.getElementById('authSection').classList.add('active');
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+    }
+
+    async function loadPendingDraw() {
+        try {
+            const res = await fetch('/api/admin/draws/pending');
+            if (res.ok) {
+                currentDraw = await res.json();
+            }
+        } catch (error) {
+            console.error('Failed to load pending draw:', error);
+        }
+    }
+
+    async function buyTicket() {
+
+        await loadPendingDraw();
+
+        if (selectedNumbers.length !== 6) {
+            showMessage('ticketMessage', 'Please select exactly 6 numbers', true);
+            return;
+        }
+
+        if (!currentDraw) {
+            showMessage('ticketMessage', 'No active draw available', true);
+            return;
+        }
+
+
+        try {
+            const res = await fetch('/api/tickets', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: currentUser.id,
+                    draw_id: currentDraw.id,
+                    numbers: selectedNumbers
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                showMessage('ticketMessage', 'Ticket purchased successfully!');
+                selectedNumbers = [];
+                updateNumberDisplay();
+                // Update balance
+                const userRes = await fetch('/api/user?id=' + currentUser.id);
+                const userData = await userRes.json();
+                currentUser.balance = userData.balance;
+                document.getElementById('userBalance').textContent = currentUser.balance;
+                loadUserTickets();
+            } else {
+                showMessage('ticketMessage', data.message  'Failed to purchase ticket', true);
+                await loadPendingDraw();
+            }
+        } catch (error) {
+            showMessage('ticketMessage', 'Failed to purchase ticket: ' + error.message, true);
+        }
+    }
+
+    async function loadUserTickets() {
+        try {
+            const res = await fetch('/api/tickets/user?user_id=' + currentUser.id);
+            const tickets = await res.json();
+
+            const listEl = document.getElementById('ticketsList');
+            if (tickets.length === 0) {
+                listEl.innerHTML = '<p style="text-align: center; color: #666;">No tickets yet. Buy your first ticket!</p>';
+                return;
+            }
+
+            listEl.innerHTML = tickets.map(item => {
+                const ticket = item.ticket;
+                const prize = item.prize;
+                const isWinner = ticket.matches >= 2;
+
+                return `
+                        <div class="ticket-card ${isWinner ? 'winner' : ''}">
+                            <div class="ticket-header">
+                                <span class="ticket-id">Ticket #${ticket.id.slice(-8)}</span>
+                                <span>${new Date(ticket.created_at).toLocaleString()}</span>
+                            </div>
+                            <div class="ticket-numbers">
+                                ${ticket.numbers.map(n => <div class="ticket-ball">${n}</div>).join('')}
+                            </div>
+                            <p>Matches: <strong>${ticket.matches || 0}</strong></p>
+                            ${item.draw_status === "completed"
+                    ? (prize ? `
+        <div class="prize-info ${prize.type}">
+            <strong>🎉 Winner!</strong><br>
+            Prize: ${prize.name}<br>
+            Value: ${prize.value} TG
+        </div>
+    ` : '<p style="color:#888">No prize</p>')
+                    : '<p style="color:#888">Draw not completed yet</p>'
+                }
+
+                        </div>
+                    `;
+            }).join('');
+        } catch (error) {
+            console.error('Failed to load tickets:', error);
+        }
+    }
+
+    function showTab(tabName) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+        event.target.classList.add('active');
+        document.getElementById(tabName + 'Tab').classList.add('active');
+
+        if (tabName === 'myTickets') {
+            loadUserTickets();
+        }
+    }
+
+    initNumberSelector();
+</script>
+</body>
+</html>
