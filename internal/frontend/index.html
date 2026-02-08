@@ -1,0 +1,12 @@
+
+
+<h1>Lottery Dashboard</h1>
+<button onclick="load()">Load Statistics</button>
+<pre id="out"></pre>
+<script>
+    function load(){
+        fetch('/admin/stats')
+            .then(r=>r.json())
+            .then(d=>out.innerText=JSON.stringify(d,null,2))
+    }
+</script>
