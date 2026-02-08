@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// gulnaz
+// gulnaz рвиаоывриывтмщтщвышм
 // the <icon src="AllIcons.Actions.Execute"/> icon in the gutter and select the <b>Run</b> menu item from here.</p>
 func main() {
 	//TIP <p>Press <shortcut actionId="ShowIntentionActions"/> when your caret is at the underlined text
